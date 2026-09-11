@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#020806">
+  <script>try{const k='ACLLECT_SESSION_V2:'+new URL('.',location.href).pathname,s=JSON.parse(sessionStorage.getItem(k));if(s&&s.authenticated===true)document.documentElement.classList.add('resume-classified')}catch(_){}</script>
   <meta name="description" content="ACLLECT 怪獣機密資料端末 / MEGALON">
   <title>RESTRICTED // SBT-1973-002</title>
   <style>
@@ -222,7 +223,9 @@
 .disconnected #disconnectScreen{pointer-events:auto}.disconnected #disconnectScreen span{animation:none!important}
 .drill-field{background:repeating-linear-gradient(0deg,transparent 0 34px,rgba(134,233,170,.16) 35px,transparent 37px 64px);transform-origin:center}
 
-</style>
+    /* Authenticated return from archive: suppress the boot gate before first paint. */
+    html.resume-classified .boot{display:none!important}
+  </style>
 <link rel="stylesheet" href="./terminal-session.css">
 </head>
 <body>
@@ -314,7 +317,7 @@
     function setBootProgress(value){document.querySelector('#bootFill').style.width=value+'%';document.querySelector('#bootPercent').textContent=String(value).padStart(2,'0')+'%'}
     function forceDisconnect(){if(disconnected)return;disconnected=true;typingRun++;roarToken++;clearTimeout(alertTimer);roar.pause();speechSynthesis.cancel();document.querySelector('#voiceCaption').classList.remove('show');document.body.classList.remove('trace-captured','alert-mode');document.body.classList.add('disconnecting','forced-disconnect');document.querySelector('#disconnectScreen').setAttribute('aria-hidden','false');const title=document.querySelector('#disconnectTitle'),detail=document.querySelector('#disconnectDetail');title.textContent='CENTRAL COMMAND OVERRIDE';detail.textContent='SECURITY TRACE CONFIRMED // SESSION CONTROL REVOKED';recordWarningBeep();setTimeout(()=>{title.textContent='UPLINK CONTROL SEIZED';detail.textContent='ARCHIVE ACCESS TOKEN INVALIDATED'},920);setTimeout(()=>{document.body.classList.add('crt-collapse');beep(74,.42)},2050);setTimeout(()=>{document.body.classList.add('disconnected');title.textContent='CONNECTION TERMINATED';detail.textContent='CENTRAL COMMAND OVERRIDE // SESSION LOG PRESERVED'},2850);setTimeout(()=>{document.querySelector('#sessionReconnect').hidden=false},3400)}
     function captureLocation(){if(disconnected)return;document.body.classList.remove('alert-mode');document.body.classList.add('trace-captured');const state=document.querySelector('#traceState'),status=document.querySelector('#captureStatus');traceSiren();setTimeout(()=>{state.textContent='● LOCATION CONFIRMED';document.querySelector('#trace').classList.add('confirmed');beep(1960,.28)},1680);setTimeout(()=>{status.textContent='REMOTE TERMINATION AUTHORIZED'},2650);setTimeout(forceDisconnect,4100)}
-    function enterArchive(){if(disconnected)return;window.scrollTo(0,0);boot.classList.add('done');document.body.classList.add('online');decodeSubject();beep(880,.08);setTimeout(()=>showEvent('PHYSICAL KEY LINKED // '+productKey,false,2800),2200);scheduleUndergroundTrace()}
+    function enterArchive(){if(disconnected)return;TerminalSession.authenticate();window.scrollTo(0,0);boot.classList.add('done');document.body.classList.add('online');decodeSubject();beep(880,.08);setTimeout(()=>showEvent('PHYSICAL KEY LINKED // '+productKey,false,2800),2200);scheduleUndergroundTrace()}
     function finish(){if(done||disconnected)return;done=true;setBootProgress(100);boot.classList.add('access-granted');setTimeout(()=>steadyBeep(640,.11),360);setTimeout(()=>steadyBeep(920,.14),1260);setTimeout(enterArchive,3450)}
     function next(){if(disconnected)return;if(n<lines.length){const line=lines[n++],alarm=line.includes('WARNING')||line.includes('FAILED'),progress=Math.min(94,Math.round(n/lines.length*94));log.innerHTML+=line+'<br>';setBootProgress(progress);steadyBeep(line.includes('FAILED')?1180:190+n*62,alarm?.14:.055);setTimeout(next,line.includes('FAILED')?760:520+Math.random()*180)}else{beep(92,.38);setTimeout(finish,1050)}}
     const dossier=document.querySelector('#dossier'),roar=document.querySelector('#roar'),stamp=dossier.querySelector('.stamp');let typingRun=0,roarToken=0,nextRoar=0;
@@ -347,6 +350,13 @@
       terminate:()=>{typingRun++;roarToken++;roar.pause();speechSynthesis.cancel();document.querySelector('#voiceCaption').classList.remove('show');captureLocation()},
       leave:()=>{disconnected=true;typingRun++;roarToken++;roar.pause();speechSynthesis.cancel();document.querySelector('#voiceCaption').classList.remove('show');if(synthCtx)synthCtx.suspend()}
     });
+    if(TerminalSession.isAuthenticated()){
+      boot.classList.add('armed','done');
+      document.body.classList.add('online');
+      specimen.classList.add('audio-ready');
+      document.documentElement.classList.remove('resume-classified');
+      scheduleUndergroundTrace();
+    }
     document.querySelector('#sessionReconnect').onclick=()=>TerminalSession.reconnect();
     document.querySelector('[data-channel="archive"]').addEventListener('click',e=>{e.preventDefault();TerminalSession.navigate('./archive.html','archive')});
     addEventListener('pagehide',()=>{typingRun++;roarToken++;roar.pause();speechSynthesis.cancel();if(synthCtx)synthCtx.suspend()});

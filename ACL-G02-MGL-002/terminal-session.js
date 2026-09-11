@@ -5,7 +5,8 @@
   const key='ACLLECT_SESSION_V2:'+folder;
   let state, hooks={}, audio, terminated=false, navigating=false, noticeTimer;
   try{state=JSON.parse(sessionStorage.getItem(key))}catch(_){}
-  if(!state||!Number.isFinite(state.start)||state.start>Date.now()||!Number.isInteger(state.stage))state={start:Date.now(),stage:0};
+  if(!state||!Number.isFinite(state.start)||state.start>Date.now()||!Number.isInteger(state.stage))state={start:Date.now(),stage:0,authenticated:false};
+  if(typeof state.authenticated!=='boolean')state.authenticated=false;
   const save=()=>{try{sessionStorage.setItem(key,JSON.stringify(state))}catch(_){}};
   save();
   function make(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text)e.textContent=text;return e}
@@ -41,7 +42,9 @@
   const api={
     startedAt:state.start,
     configure(options){hooks=options;setTimeout(tick,0)},
-    reconnect(){state={start:Date.now(),stage:0};save();stopMedia();location.assign('./index.html')},
+    authenticate(){state.authenticated=true;save()},
+    isAuthenticated(){return state.authenticated===true},
+    reconnect(){state={start:Date.now(),stage:0,authenticated:false};save();stopMedia();location.assign('./index.html')},
     navigate(href,target){if(terminated||navigating)return;tick();if(terminated)return;navigating=true;stopMedia();if(hooks.leave)hooks.leave();
       const steps=target==='archive'?['CLASSIFIED DATABASE DISCONNECTED','ARCHIVE CHANNEL REQUESTED','CONNECTING TO ARCHIVE STORAGE…','ARCHIVE DATABASE CONNECTED']:['ARCHIVE DATABASE DISCONNECTED','RETURNING TO CLASSIFIED SYSTEM…','CLASSIFIED CHANNEL CONNECTED'];
       channelSteps.replaceChildren();channel.hidden=false;

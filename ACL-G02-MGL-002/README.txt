@@ -1,5 +1,12 @@
 MEGALON / RELEASE 2026-09-11
 
+追補修正
+ARCHIVEからCLASSIFIEDへ戻る場合、同じタブで認証済みのセッションを引き継ぎ、起動認証を繰り返しません。
+新規タブ・新規セッション・RECONNECT時だけ最初の認証画面を表示します。
+PC版の予告編は通常の公式YouTube埋め込みへ変更し、公開元情報を渡して再生互換性を改善しました。
+埋め込みが端末や動画側の設定で制限される場合も、直下の「東宝公式チャンネルで開く」は利用できます。
+ARCHIVEの見出し・登録表・作品カード・本文セクションの上下余白を共通の間隔へ整理しました。
+
 配置
 ZIP内の ACL-G02-MGL-002 フォルダの中身を、GitHubの同名フォルダへ配置してください。
 index.htmlを上書きし、archive.html、terminal-session.js、terminal-session.css、archive-imagesを追加します。
