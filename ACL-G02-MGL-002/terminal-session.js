@@ -20,6 +20,10 @@
   document.addEventListener('pointerdown',unlock,{once:true});document.addEventListener('keydown',unlock,{once:true});
   function tone(f=480,d=.09){if(!audio||audio.state!=='running')return;const t=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.035,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(audio.destination);o.start(t);o.stop(t+d+.02);o.onended=()=>{o.disconnect();g.disconnect()}}
   function sound(level){if(hooks.sound){hooks.sound(level);return}tone(level===1?380:760,.12);if(level>1)setTimeout(()=>tone(580,.14),230)}
+  function channelCheck(target){
+    const notes=target==='archive'?[310,465,620,845]:[420,560,735];
+    notes.forEach((frequency,index)=>setTimeout(()=>tone(frequency,index===notes.length-1?.16:.075),index*125));
+  }
   function notify(level){
     notice.replaceChildren(make('small','','ACCESS CONTROL // '+(level===1?'VALIDATION PENDING':'TRACE ACTIVE')),make('strong','',level===1?'UNUSUAL ACCESS PATTERN DETECTED':'UNAUTHORIZED SESSION CONFIRMED'),make('span','',level===1?'セッション認証を再確認中':'接続元の追跡を開始しました'));
     notice.dataset.level=String(level);notice.hidden=false;clearTimeout(noticeTimer);sound(level);
@@ -45,8 +49,8 @@
     authenticate(){state.authenticated=true;save()},
     isAuthenticated(){return state.authenticated===true},
     reconnect(){state={start:Date.now(),stage:0,authenticated:false};save();stopMedia();location.assign('./index.html')},
-    navigate(href,target){if(terminated||navigating)return;tick();if(terminated)return;navigating=true;stopMedia();if(hooks.leave)hooks.leave();
-      const steps=target==='archive'?['CLASSIFIED DATABASE DISCONNECTED','ARCHIVE CHANNEL REQUESTED','CONNECTING TO ARCHIVE STORAGE…','ARCHIVE DATABASE CONNECTED']:['ARCHIVE DATABASE DISCONNECTED','RETURNING TO CLASSIFIED SYSTEM…','CLASSIFIED CHANNEL CONNECTED'];
+    navigate(href,target){if(terminated||navigating)return;tick();if(terminated)return;navigating=true;stopMedia();channelCheck(target);if(hooks.leave)hooks.leave();
+      const steps=target==='archive'?['CLASSIFIED DATABASE DISCONNECTED','ARCHIVE ACCESS KEY CHECK','ARCHIVE CHANNEL AUTHENTICATED','CONNECTING TO ARCHIVE STORAGE…','ARCHIVE DATABASE CONNECTED']:['ARCHIVE DATABASE DISCONNECTED','CLASSIFIED SESSION KEY VERIFIED','RETURNING TO CLASSIFIED SYSTEM…','CLASSIFIED CHANNEL CONNECTED'];
       channelSteps.replaceChildren();channel.hidden=false;
       steps.forEach((text,i)=>setTimeout(()=>{if(terminated)return;channelText.textContent=text;channelSteps.append(make('span','',String(i+1).padStart(2,'0')+' / '+text));tone(420+i*55,.07)},i*650));
       setTimeout(()=>{if(!terminated)location.assign(href)},steps.length*650+250)

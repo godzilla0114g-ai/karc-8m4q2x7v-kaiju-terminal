@@ -21,6 +21,7 @@ index.html / archive.html / terminal-session.js / terminal-session.css は同じ
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#171c18">
+<script>document.documentElement.classList.add('archive-arrival')</script>
 <title>MEGALON / ARCHIVE DATABASE</title>
 <link rel="stylesheet" href="./terminal-session.css">
 <style>
@@ -59,6 +60,27 @@ h1{margin-bottom:10px}h2{margin:8px 0 16px}h3{margin-bottom:10px}
   .section-heading{margin:20px 0 11px;padding-bottom:7px}
   .file-card{padding:13px 0;gap:13px}.work-meta{margin-bottom:12px}
 }
+
+/* Private archive finish: aged records held inside the same restricted system. */
+:root{--paper:#23261f;--ink:#d2cebc;--muted:#858777;--rule:#4b5045;--accent:#a35d4c;--dark:#0a0f0c}
+html.archive-arrival body{opacity:0}
+body.archive-reveal{animation:archiveReveal 1.45s cubic-bezier(.2,.72,.25,1) both}
+@keyframes archiveReveal{0%{opacity:0;filter:brightness(.28) contrast(1.25)}42%{opacity:.5;filter:brightness(.68) contrast(1.12)}100%{opacity:1;filter:none}}
+body{background:radial-gradient(ellipse at 72% 18%,rgba(50,66,48,.25),transparent 34rem),radial-gradient(ellipse at 13% 68%,rgba(83,31,24,.14),transparent 29rem),#090d0b;color:var(--ink)}
+body::before{opacity:.28;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(172,191,171,.05) 4px),repeating-linear-gradient(90deg,transparent 0 83px,rgba(130,145,126,.025) 84px)}
+.archive-bar{color:#899a8c}.archive-bar a{border-color:#425648;color:#a9b8aa;background:#101713}
+.paper{overflow:hidden;background:radial-gradient(ellipse at 17% 6%,rgba(167,143,100,.12),transparent 27rem),radial-gradient(ellipse at 93% 72%,rgba(91,31,24,.11),transparent 31rem),repeating-linear-gradient(0deg,rgba(225,218,191,.016) 0 1px,transparent 1px 5px),#22251e;border-top-color:#6d7667;box-shadow:0 22px 75px #000b,inset 0 0 110px rgba(0,0,0,.44)}
+.paper::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.22),transparent 12%,transparent 86%,rgba(0,0,0,.25)),linear-gradient(0deg,rgba(0,0,0,.3),transparent 15%,transparent 88%,rgba(0,0,0,.2));mix-blend-mode:multiply}
+.paper>*{position:relative;z-index:1}.masthead{border-color:#62685a}.masthead b{color:#bd7560;border-color:#805447;background:#2f211d}
+.subtitle,.curator-comment{color:#ded8c2}.index-intro,.file-card p{color:#aaa998}.registry,.section-heading,.file-card,.file-nav,.work-meta,.archive-footer{border-color:var(--rule)}
+.file-card img{background:#101510;filter:grayscale(.72) sepia(.23) brightness(.72)}
+.file-card button,.file-nav button,.trailer-launch,.modal-close{border-color:#777b6c;color:#d2cebc;background:#191c17}.file-card button:hover,.file-nav button:hover{background:#c7c0ac;color:#171a16}
+.item-open,.item-open img,.modal-content img{background:#171b16}.item-modal{background:#252820;color:var(--ink);border-color:#777b69}.empty-note{background:rgba(80,62,39,.18);color:#aaa894}.curator-comment{border-color:#8a5947}.source-note{color:#858777}
+.poster-record{margin:20px 0 4px;padding:10px;border:1px solid #4f5449;background:#141813;box-shadow:0 14px 35px #0007}
+.poster-record img{display:block;width:100%;height:auto;filter:saturate(.52) sepia(.18) brightness(.64) contrast(1.05);transition:filter .55s ease}
+.poster-record:hover img{filter:saturate(.72) sepia(.1) brightness(.76) contrast(1.03)}
+.poster-record figcaption{display:flex;justify-content:space-between;gap:10px;padding:9px 4px 1px;color:#9a9a88;font-size:11px;letter-spacing:.08em}.poster-record a{color:#b87662}
+@media(max-width:700px){.poster-record{margin-top:14px;padding:6px}.poster-record figcaption{display:block;line-height:1.7}.paper{box-shadow:0 18px 55px #000c,inset 0 0 70px rgba(0,0,0,.4)}}
 </style>
 </head>
 <body>
@@ -83,6 +105,11 @@ h1{margin-bottom:10px}h2{margin:8px 0 16px}h3{margin-bottom:10px}
 <h2 tabindex="-1">ゴジラ対メガロ</h2>
 <!-- ★ 公開年・作品情報 -->
 <div class="work-meta"><span>公開：1973年</span><span>監督：福田 純</span><span>特技監督：中野 昭慶</span></div>
+<!-- ★ 映画ポスター：画像を変更する場合はsrc・width・height・alt・参照元URLを更新してください。 -->
+<figure class="poster-record">
+  <img src="./archive-images/megalon-poster.jpg" alt="1973年公開『ゴジラ対メガロ』の日本公開時ポスター" width="2048" height="1295" loading="eager">
+  <figcaption><span>RELEASE POSTER // 1973</span><a href="https://japanposter.co.uk/products/godzilla-vs-megalon-original-release-japanese-movie-poster-1973-ultra-rare-large-size-71-x-47-5" target="_blank" rel="noopener">資料画像の参照元</a></figcaption>
+</figure>
 <div class="section-heading"><h3>CURATOR COLLECTION</h3><small>館長収蔵資料</small></div>
 <!-- ★ 収蔵資料：下の空のdivの中へ、ITEM START～ITEM ENDのarticleをコピーして追加してください。 -->
 <div class="collection-grid">
@@ -106,7 +133,7 @@ h1{margin-bottom:10px}h2{margin:8px 0 16px}h3{margin-bottom:10px}
 <h3>SUBJECT IN THIS FILM</h3>
 <p>本作でのメガロは、シートピアに崇められる守護神であり、地上への侵攻を担う存在。両腕のドリルと昆虫を思わせる姿が特徴で、ガイガンと組んでゴジラとジェットジャガーに挑む。</p>
 </div>
-<p class="source-note">作品資料：<a href="https://www.youtube.com/watch?v=OBHgwl1cb4A" target="_blank" rel="noopener">東宝公式予告編</a> ／ <a href="https://en.wikipedia.org/wiki/Godzilla_vs._Megalon" target="_blank" rel="noopener">作品・スタッフ情報</a><br>掲載スチール：既存資料からの再録。収蔵品の写真とは区別して保管。</p>
+<p class="source-note">作品資料：<a href="https://www.youtube.com/watch?v=OBHgwl1cb4A" target="_blank" rel="noopener">東宝公式予告編</a> ／ <a href="https://ja.wikipedia.org/wiki/%E3%82%B4%E3%82%B8%E3%83%A9%E5%AF%BE%E3%83%A1%E3%82%AC%E3%83%AD" target="_blank" rel="noopener">日本語版 作品・スタッフ情報</a><br>掲載スチール：既存資料からの再録。収蔵品の写真とは区別して保管。</p>
 </article>
 <!-- ★ WORK END -->
 <nav class="file-nav" aria-label="作品間移動"><button type="button" id="previousFile">PREVIOUS FILE</button><button type="button" data-index>ARCHIVE INDEX</button><button type="button" id="nextFile">NEXT FILE</button></nav>
@@ -151,6 +178,7 @@ h1{margin-bottom:10px}h2{margin:8px 0 16px}h3{margin-bottom:10px}
  document.querySelectorAll('.trailer-launch').forEach(button=>{const id=videoID(button.dataset.youtubeUrl),trailer=button.closest('.trailer'),external=trailer.querySelector('.external a');if(!/^[\w-]{11}$/.test(id)){button.textContent='MATERIAL NOT AVAILABLE / 映像資料未登録';button.disabled=true;trailer.querySelector('.external').hidden=true;return}external.href='https://www.youtube.com/watch?v='+id;const thumbnail=document.createElement('img');thumbnail.src='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';thumbnail.alt='公式予告編のサムネイル';thumbnail.loading='lazy';thumbnail.onerror=()=>thumbnail.remove();button.prepend(thumbnail);button.addEventListener('click',()=>{const frame=trailer.querySelector('.video-frame'),iframe=document.createElement('iframe'),origin=location.protocol==='https:'?'&origin='+encodeURIComponent(location.origin):'';iframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1&playsinline=1&rel=0'+origin;iframe.title='公式予告編';iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';iframe.allowFullscreen=true;iframe.loading='eager';iframe.referrerPolicy='strict-origin-when-cross-origin';frame.replaceChildren(iframe);frame.hidden=false;button.hidden=true})});
  document.querySelector('[data-return]').addEventListener('click',e=>{e.preventDefault();TerminalSession.navigate('./index.html','classified')});TerminalSession.configure({leave:()=>{stopVideos();if(modal.open)modal.close()}});
  const selected=works.findIndex(w=>'#'+w.id===location.hash);if(selected>=0)openFile(selected);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{document.body.classList.add('archive-reveal');document.documentElement.classList.remove('archive-arrival')}));
  addEventListener('pageshow',e=>{if(e.persisted)location.reload()});
 })();
 </script>
