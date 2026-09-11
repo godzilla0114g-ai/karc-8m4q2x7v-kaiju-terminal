@@ -1,0 +1,138 @@
+<!doctype html>
+<!--
+========================================
+館長編集ポイント / RELEASE 2026-09-11
+========================================
+「★」で検索すると編集場所へ移動できます。
+★ 作品情報：data-title / data-year / data-note と本文を変更。
+★ 館長コメント：curator-comment 内の文章を変更。
+★ 収蔵資料：ITEM START～ITEM END の article を collection-grid 内へコピー。
+★ 収蔵画像：archive-images に画像を置き、src と alt を変更。
+  推奨1200×1200px、最低目安800×800px。縦横長でも全体表示します。
+★ YouTube URL：予告編ボタンの data-youtube-url を変更。空なら資料未登録。
+作品を増やす場合：WORK START～WORK END を複製し、id を一意に変更。
+作品一覧・登録作品数・前後移動は自動更新。新たなJavaScript編集は不要。
+収蔵品・コメントは館長本人の記録を入力してください。
+index.html / archive.html / terminal-session.js / terminal-session.css は同じフォルダに置く。
+========================================
+-->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171c18">
+<title>MEGALON / ARCHIVE DATABASE</title>
+<link rel="stylesheet" href="./terminal-session.css">
+<style>
+:root{--paper:#dcd5c3;--ink:#282f29;--muted:#636557;--rule:#8e907d;--accent:#83503f;--dark:#151c18;--mono:'Courier New',monospace}
+*{box-sizing:border-box}body{margin:0;background:#101613;color:var(--ink);font-family:var(--mono),sans-serif;line-height:1.7}body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.15;background:repeating-linear-gradient(0deg,transparent 0 3px,#879a8b15 4px)}
+button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}a{color:inherit;text-underline-offset:4px}button:focus-visible,a:focus-visible{outline:2px solid #986649;outline-offset:4px}[hidden]{display:none!important}
+.archive-shell{max-width:1180px;margin:0 auto;padding:0 16px 40px}.archive-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:64px;padding:calc(14px + env(safe-area-inset-top,0px)) 0 14px;color:#b9c3b4;font-size:12px;letter-spacing:.1em}.archive-bar a{text-decoration:none;border:1px solid #56685b;padding:9px 12px;min-height:44px}.archive-bar a:hover{background:#25352a}
+.paper{position:relative;min-height:72vh;padding:clamp(22px,5vw,60px);background:linear-gradient(110deg,#f0e9d517,transparent 55%),repeating-linear-gradient(0deg,#5c4b2910 0 1px,transparent 1px 5px),var(--paper);box-shadow:0 18px 60px #0006;border-top:5px solid #919c86}
+.masthead{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-bottom:16px;border-bottom:1px solid var(--ink);font-size:12px;letter-spacing:.12em}.masthead b{font-weight:400;color:var(--accent);border:1px solid #9e7d62;padding:3px 8px;white-space:nowrap}.eyebrow{font-size:12px;letter-spacing:.16em;color:var(--muted);margin:32px 0 6px}h1{font-size:clamp(48px,11vw,104px);line-height:.95;font-weight:400;letter-spacing:-.065em;margin:0 0 14px}h2{font-size:clamp(24px,5vw,38px);line-height:1.45;margin:12px 0 22px;letter-spacing:.025em}h3{font-size:18px;font-weight:400;margin:0 0 14px}.subtitle{font-family:serif;font-size:20px;margin:0}.index-intro{margin:18px 0 24px;max-width:42rem;font-size:15px;color:#51594d}
+.registry{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid var(--rule);margin:26px 0 40px}.registry div{padding:16px 12px;border-right:1px solid var(--rule)}.registry div:first-child{padding-left:0}.registry div:last-child{border:0}.registry dt{font-size:11px;letter-spacing:.1em;color:var(--muted)}.registry dd{margin:7px 0 0;font-size:24px;line-height:1.3}
+.section-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--ink);padding-bottom:10px;margin:32px 0 20px}.section-heading h3{margin:0;letter-spacing:.06em}.section-heading small{font-size:12px;color:var(--muted)}
+.file-card{display:grid;grid-template-columns:120px 1fr;gap:22px;align-items:center;border-bottom:1px solid var(--rule);padding:22px 0}.file-card img{width:120px;height:150px;object-fit:contain;background:#1c221d;filter:grayscale(1) sepia(.14)}.file-card small{font-size:12px;color:var(--accent);letter-spacing:.13em}.file-card h3{font-size:22px;line-height:1.5;margin:5px 0 8px}.file-card p{font-size:14px;margin:0 0 15px;color:#51594d}.file-card button,.file-nav button,.trailer-launch,.modal-close{border:1px solid var(--ink);background:transparent;color:var(--ink);padding:11px 16px;min-height:44px;font-size:13px}.file-card button:hover,.file-nav button:hover{background:var(--ink);color:var(--paper)}
+.file-nav{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;border-top:1px solid var(--rule);padding-top:22px;margin-top:34px}.file-nav button[disabled]{opacity:.3;cursor:default}.file-back{padding:7px 0;background:none;border:0;border-bottom:1px solid var(--rule);font-size:13px;margin:24px 0 4px;min-height:44px}
+.work-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;border-block:1px solid var(--rule);padding:12px 0;margin-bottom:24px}.collection-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.collection-item{min-width:0}.item-open{display:block;width:100%;padding:0;border:1px solid #9a9b87;background:#c9c3b2;text-align:left;color:var(--ink)}.item-open img{display:block;width:100%;aspect-ratio:1;object-fit:contain;background:#c9c3b2}.item-open span{display:block;padding:8px 10px;font:12px var(--mono)}.item-info h4{font-size:15px;line-height:1.6;margin:10px 0}.item-info p{font-size:13px;line-height:1.65}.item-info dl{font-size:12px}.item-info dt{color:var(--muted)}.item-info dd{margin:0 0 7px}.empty-note{border-left:2px solid var(--accent);padding:16px 20px;background:#c7bd9f38;color:#5f6253;font-size:14px;line-height:1.9;margin:0}.empty-note strong{display:block;font-weight:400;font-size:12px;color:#83503f;letter-spacing:.12em;margin-bottom:5px}
+.curator-comment{font-family:serif;font-size:18px;line-height:2;padding:4px 0 4px 20px;border-left:2px solid #8a785b}.curator-comment p{margin:0}.curator-comment .pending{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.trailer{max-width:700px}.trailer-launch{display:block;width:100%;padding:0;background:#202820;color:#dcd5c3;text-align:left}.trailer-launch img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;opacity:.78}.trailer-launch span{display:block;padding:14px 18px;font-size:14px}.video-frame{aspect-ratio:16/9;width:100%;background:#101713}.video-frame iframe{width:100%;height:100%;display:block;border:0}.trailer .external{font-size:12px;margin:10px 0}.work-summary{font-size:16px;line-height:1.95;max-width:50rem}.work-summary h3{margin-top:22px;font-size:14px;color:var(--accent)}.source-note{margin-top:28px;font-size:12px;color:var(--muted)}.archive-footer{margin-top:32px;border-top:1px solid var(--rule);padding-top:15px;font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.item-modal{width:min(850px,calc(100% - 24px));max-height:calc(100svh - 32px);padding:22px;border:1px solid #9b9e87;background:var(--paper);color:var(--ink);overflow:auto}.item-modal::backdrop{background:#000c}.modal-close{display:block;margin:0 0 18px auto}.modal-content img{display:block;max-width:100%;width:100%;height:min(52svh,500px);object-fit:contain;background:#c9c3b2}.modal-content .item-info{padding-top:15px}.modal-content h4{font-size:22px}
+@media(max-width:700px){.archive-shell{padding:0 10px 24px}.archive-bar{font-size:10px;letter-spacing:.04em}.archive-bar a{font-size:11px;padding:9px 7px}.paper{padding:22px 18px}.masthead{font-size:10px;letter-spacing:.05em;align-items:flex-start}.masthead b{font-size:10px;padding:2px 5px}.registry{margin:24px 0}.registry dt{font-size:10px}.registry dd{font-size:22px}.file-card{grid-template-columns:86px 1fr;gap:15px}.file-card img{width:86px;height:125px}.file-card h3{font-size:18px}.file-card p{font-size:13px}.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px}.section-heading{display:block}.section-heading small{display:block;margin-top:5px}.work-meta{font-size:12px}.file-nav button{padding:10px;font-size:11px}.curator-comment{font-size:17px;padding-left:14px}.index-intro{font-size:14px}.item-modal{padding:16px}.source-note{overflow-wrap:anywhere}}
+</style>
+</head>
+<body>
+<div class="archive-shell">
+<header class="archive-bar"><span>LEGACY NODE 09 / PRIVATE STORAGE</span><a href="./index.html" data-return>RETURN TO CLASSIFIED</a></header>
+<main class="paper" id="archiveMain">
+<div class="masthead"><span>ARCHIVE DATABASE<br>館長私設資料庫</span><b>ACL-G02-MGL-002</b></div>
+<section id="archiveIndex">
+<p class="eyebrow">SUBJECT REGISTER / 002</p>
+<h1>MEGALON</h1><p class="subtitle">王国の守護神 — メガロ</p>
+<p class="index-intro">作品の記録と、その傍らに残しておきたい収蔵品。ここには、館長自身が集めた資料と個人の記録を収める。</p>
+<dl class="registry"><div><dt>FIRST APPEARANCE</dt><dd>1973</dd></div><div><dt>ARCHIVE FILES</dt><dd id="fileCount">1</dd></div><div><dt>PERIOD</dt><dd id="filePeriod">1973</dd></div></dl>
+<div class="section-heading"><h3>FILM FILES / 作品記録</h3><small>登録された資料から閲覧</small></div>
+<div id="workList"></div>
+</section>
+<section id="fileView" hidden>
+<button type="button" class="file-back" data-index>ARCHIVE INDEX / 作品一覧へ</button>
+<!-- ★ WORK START：このarticle全体を複製し、idを film-1974 など一意に変更すると作品を追加できます。 -->
+<!-- ★ 作品名・公開年・一覧説明・一覧画像。本文の見出しとあわせて変更してください。 -->
+<article class="work-file" id="film-1973" data-title="ゴジラ対メガロ" data-year="1973" data-note="シートピアの守護神、地上へ。" data-image="./archive-images/megalon-still.png" hidden>
+<p class="eyebrow">SHOWA ERA / FILM RECORD 1973</p>
+<h2 tabindex="-1">ゴジラ対メガロ</h2>
+<!-- ★ 公開年・作品情報 -->
+<div class="work-meta"><span>公開：1973年</span><span>監督：福田 純</span><span>特技監督：中野 昭慶</span></div>
+<div class="section-heading"><h3>CURATOR COLLECTION</h3><small>館長収蔵資料</small></div>
+<!-- ★ 収蔵資料：下の空のdivの中へ、ITEM START～ITEM ENDのarticleをコピーして追加してください。 -->
+<div class="collection-grid">
+</div>
+<p class="empty-note collection-empty"><strong>COLLECTION RECORD PENDING</strong>収蔵資料は整理中。写真と記録が揃い次第、ここへ収録します。</p>
+<div class="section-heading"><h3>CURATOR'S NOTE</h3><small>館長コメント</small></div>
+<!-- ★ 館長コメント：このdiv内の文章だけを書き換えてください。 -->
+<div class="curator-comment"><p class="pending">館長手記：未記入</p></div>
+<!-- ★ 館長コメントここまで -->
+<div class="section-heading"><h3>OFFICIAL TRAILER</h3><small>公式映像資料</small></div>
+<div class="trailer">
+<!-- ★ YouTube URL：公式予告編URLを変更。空文字ならMATERIAL NOT AVAILABLEと表示。 -->
+<button type="button" class="trailer-launch" data-youtube-url="https://www.youtube.com/watch?v=OBHgwl1cb4A"><span>OFFICIAL TRAILER / 予告編を再生</span></button>
+<div class="video-frame" hidden></div>
+<p class="external"><a href="https://www.youtube.com/watch?v=OBHgwl1cb4A" target="_blank" rel="noopener">東宝公式チャンネルで開く</a></p>
+</div>
+<div class="section-heading"><h3>FILM CONTEXT</h3><small>この作品のメガロ</small></div>
+<!-- ★ 作品概要：3～5行程度の短い説明。 -->
+<div class="work-summary">
+<p>核実験の被害を受けたシートピアが、地上への報復に守護神メガロを送り込む。<br>ジェットジャガーをめぐる攻防は、ゴジラとメガロの対決へと発展する。<br>ガイガンも加わり、戦いは二対二の怪獣戦へ。</p>
+<h3>SUBJECT IN THIS FILM</h3>
+<p>本作でのメガロは、シートピアに崇められる守護神であり、地上への侵攻を担う存在。両腕のドリルと昆虫を思わせる姿が特徴で、ガイガンと組んでゴジラとジェットジャガーに挑む。</p>
+</div>
+<p class="source-note">作品資料：<a href="https://www.youtube.com/watch?v=OBHgwl1cb4A" target="_blank" rel="noopener">東宝公式予告編</a> ／ <a href="https://en.wikipedia.org/wiki/Godzilla_vs._Megalon" target="_blank" rel="noopener">作品・スタッフ情報</a><br>掲載スチール：既存資料からの再録。収蔵品の写真とは区別して保管。</p>
+</article>
+<!-- ★ WORK END -->
+<nav class="file-nav" aria-label="作品間移動"><button type="button" id="previousFile">PREVIOUS FILE</button><button type="button" data-index>ARCHIVE INDEX</button><button type="button" id="nextFile">NEXT FILE</button></nav>
+</section>
+<footer class="archive-footer"><span>PRIVATE ARCHIVE / REFERENCE ACL-G02-MGL-002</span><span>SESSION <b data-session-clock>00:00</b></span></footer>
+</main>
+</div>
+
+<!-- ★ 収蔵品追加用テンプレート。templateのタグ自体はコピーせず、articleだけを上のcollection-gridへ貼り付けます。 -->
+<template id="collectionItemTemplate">
+<!-- ★ ITEM START -->
+<article class="collection-item">
+  <button class="item-open" type="button" aria-label="収蔵資料の画像と詳細を開く">
+    <!-- ★ 収蔵画像：srcを画像ファイル名に変更。altは写っている品名。 -->
+    <img src="./archive-images/item-01.jpg" alt="収蔵品名を入力" loading="lazy" width="1200" height="1200">
+    <span>ITEM 01 / VIEW RECORD</span>
+  </button>
+  <div class="item-info">
+    <!-- ★ 収蔵資料：名称・分類・年代を入力。分からない年代は不明で構いません。 -->
+    <h4>収蔵品名を入力</h4>
+    <dl><dt>CATEGORY</dt><dd>分類を入力</dd><dt>YEAR</dt><dd>年代を入力</dd></dl>
+    <!-- ★ 館長メモ -->
+    <p>この品を収蔵した経緯や、残しておきたいことを入力。</p>
+  </div>
+</article>
+<!-- ★ ITEM END -->
+</template>
+
+<dialog class="item-modal" id="itemModal" aria-label="収蔵資料の詳細"><button class="modal-close" type="button">CLOSE / 閉じる</button><div class="modal-content"></div></dialog>
+<script src="./terminal-session.js"></script>
+<script>
+(() => {
+ const works=[...document.querySelectorAll('.work-file')],index=document.querySelector('#archiveIndex'),view=document.querySelector('#fileView'),list=document.querySelector('#workList'),modal=document.querySelector('#itemModal');let current=-1;
+ function stopVideos(){document.querySelectorAll('.video-frame').forEach(el=>{el.replaceChildren();el.hidden=true});document.querySelectorAll('.trailer-launch').forEach(el=>el.hidden=false)}
+ function showIndex(){stopVideos();works.forEach(w=>w.hidden=true);view.hidden=true;index.hidden=false;current=-1;history.replaceState(null,'',location.pathname+location.search);window.scrollTo({top:0,behavior:'instant'})}
+ function openFile(i){if(!works[i])return;stopVideos();current=i;index.hidden=true;view.hidden=false;works.forEach((w,n)=>w.hidden=n!==i);document.querySelector('#previousFile').disabled=i===0;document.querySelector('#nextFile').disabled=i===works.length-1;history.replaceState(null,'','#'+works[i].id);works[i].querySelector('h2').focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'})}
+ works.forEach((w,i)=>{const card=document.createElement('article');card.className='file-card';const image=document.createElement('img');image.src=w.dataset.image;image.alt=w.dataset.title+'の記録スチール';image.loading='lazy';const info=document.createElement('div'),meta=document.createElement('small'),title=document.createElement('h3'),note=document.createElement('p'),button=document.createElement('button');meta.textContent=w.dataset.year+' / FILE '+String(i+1).padStart(2,'0');title.textContent=w.dataset.title;note.textContent=w.dataset.note;button.type='button';button.textContent='OPEN FILE / 資料を開く';button.addEventListener('click',()=>openFile(i));info.append(meta,title,note,button);card.append(image,info);list.append(card);w.querySelector('.collection-empty').hidden=w.querySelectorAll('.collection-grid .collection-item').length>0});
+ document.querySelector('#fileCount').textContent=String(works.length);const years=works.map(w=>Number(w.dataset.year)).filter(Number.isFinite).sort((a,b)=>a-b);document.querySelector('#filePeriod').textContent=years.length?(years[0]===years.at(-1)?String(years[0]):years[0]+'–'+years.at(-1)):'—';
+ document.querySelectorAll('[data-index]').forEach(b=>b.addEventListener('click',showIndex));document.querySelector('#previousFile').onclick=()=>openFile(current-1);document.querySelector('#nextFile').onclick=()=>openFile(current+1);
+ document.querySelectorAll('.collection-grid .item-open').forEach(b=>b.addEventListener('click',()=>{const contents=document.querySelector('.modal-content');contents.replaceChildren(b.querySelector('img').cloneNode(),b.closest('.collection-item').querySelector('.item-info').cloneNode(true));modal.showModal()}));document.querySelector('.modal-close').onclick=()=>modal.close();modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)modal.close()}});
+ function videoID(value){try{const u=new URL(value);if(u.hostname==='youtu.be')return u.pathname.slice(1).split('/')[0];if(['youtube.com','www.youtube.com','m.youtube.com'].includes(u.hostname))return u.searchParams.get('v')||u.pathname.split('/').pop()}catch(_){}return ''}
+ document.querySelectorAll('.trailer-launch').forEach(button=>{const id=videoID(button.dataset.youtubeUrl),trailer=button.closest('.trailer'),external=trailer.querySelector('.external a');if(!/^[\w-]{11}$/.test(id)){button.textContent='MATERIAL NOT AVAILABLE / 映像資料未登録';button.disabled=true;trailer.querySelector('.external').hidden=true;return}external.href='https://www.youtube.com/watch?v='+id;const thumbnail=document.createElement('img');thumbnail.src='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';thumbnail.alt='公式予告編のサムネイル';thumbnail.loading='lazy';thumbnail.onerror=()=>thumbnail.remove();button.prepend(thumbnail);button.addEventListener('click',()=>{const frame=trailer.querySelector('.video-frame'),iframe=document.createElement('iframe');iframe.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&playsinline=1';iframe.title='公式予告編';iframe.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';iframe.allowFullscreen=true;iframe.referrerPolicy='strict-origin-when-cross-origin';frame.replaceChildren(iframe);frame.hidden=false;button.hidden=true})});
+ document.querySelector('[data-return]').addEventListener('click',e=>{e.preventDefault();TerminalSession.navigate('./index.html','classified')});TerminalSession.configure({leave:()=>{stopVideos();if(modal.open)modal.close()}});
+ const selected=works.findIndex(w=>'#'+w.id===location.hash);if(selected>=0)openFile(selected);
+ addEventListener('pageshow',e=>{if(e.persisted)location.reload()});
+})();
+</script>
+</body>
+</html>
