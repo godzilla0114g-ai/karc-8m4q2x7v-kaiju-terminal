@@ -23,7 +23,7 @@ index.html / archive.html / terminal-session.js / terminal-session.css は同じ
 <meta name="theme-color" content="#171c18">
 <script>document.documentElement.classList.add('archive-arrival')</script>
 <title>MEGALON / ARCHIVE DATABASE</title>
-<link rel="stylesheet" href="./terminal-session.css">
+<link rel="stylesheet" href="./terminal-session.css?v=4">
 <style>
 :root{--paper:#dcd5c3;--ink:#282f29;--muted:#636557;--rule:#8e907d;--accent:#83503f;--dark:#151c18;--mono:'Courier New',monospace}
 *{box-sizing:border-box}body{margin:0;background:#101613;color:var(--ink);font-family:var(--mono),sans-serif;line-height:1.7}body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.15;background:repeating-linear-gradient(0deg,transparent 0 3px,#879a8b15 4px)}
@@ -63,8 +63,8 @@ h1{margin-bottom:10px}h2{margin:8px 0 16px}h3{margin-bottom:10px}
 
 /* Private archive finish: aged records held inside the same restricted system. */
 :root{--paper:#23261f;--ink:#d2cebc;--muted:#858777;--rule:#4b5045;--accent:#a35d4c;--dark:#0a0f0c}
-html.archive-arrival body{opacity:0}
-body.archive-reveal{animation:archiveReveal 1.45s cubic-bezier(.2,.72,.25,1) both}
+html.archive-arrival .archive-shell{opacity:0}
+body.archive-reveal .archive-shell{animation:archiveReveal 1.45s cubic-bezier(.2,.72,.25,1) both}
 @keyframes archiveReveal{0%{opacity:0;filter:brightness(.28) contrast(1.25)}42%{opacity:.5;filter:brightness(.68) contrast(1.12)}100%{opacity:1;filter:none}}
 body{background:radial-gradient(ellipse at 72% 18%,rgba(50,66,48,.25),transparent 34rem),radial-gradient(ellipse at 13% 68%,rgba(83,31,24,.14),transparent 29rem),#090d0b;color:var(--ink)}
 body::before{opacity:.28;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(172,191,171,.05) 4px),repeating-linear-gradient(90deg,transparent 0 83px,rgba(130,145,126,.025) 84px)}
@@ -81,11 +81,22 @@ body::before{opacity:.28;background:repeating-linear-gradient(0deg,transparent 0
 .poster-record:hover img{filter:saturate(.72) sepia(.1) brightness(.76) contrast(1.03)}
 .poster-record figcaption{display:flex;justify-content:space-between;gap:10px;padding:9px 4px 1px;color:#9a9a88;font-size:11px;letter-spacing:.08em}.poster-record a{color:#b87662}
 @media(max-width:700px){.poster-record{margin-top:14px;padding:6px}.poster-record figcaption{display:block;line-height:1.7}.paper{box-shadow:0 18px 55px #000c,inset 0 0 70px rgba(0,0,0,.4)}}
+
+/* Consistent reading route; retain a compact return control on small screens. */
+.archive-bar{position:sticky;top:0;z-index:20;background:#0c110fee;padding:12px 0;backdrop-filter:blur(8px);gap:12px}
+.archive-bar a{display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;border:1px solid #657260;color:#c5d0bf;white-space:nowrap}
+.paper{min-height:0!important}.archive-shell{max-width:1080px}
+.poster-record{width:min(100%,380px);margin:24px auto;padding:0;border:0;background:transparent;box-shadow:none}
+.poster-record img{filter:saturate(.78) brightness(.86);width:100%;height:auto}
+.poster-record:hover img{filter:saturate(.9) brightness(.95)}
+.file-back{min-height:44px;border:1px solid #59634f;padding:10px 14px}
+button:focus-visible,a:focus-visible{outline:2px solid #adbea2;outline-offset:4px}
+@media(max-width:700px){.archive-bar{font-size:10px}.archive-bar>span{max-width:42%}.paper{padding:22px 18px}.poster-record{width:min(100%,320px)}}
 </style>
 </head>
 <body>
 <div class="archive-shell">
-<header class="archive-bar"><span>LEGACY NODE 09 / PRIVATE STORAGE</span><a href="./index.html" data-return>RETURN TO CLASSIFIED</a></header>
+<header class="archive-bar"><span>LEGACY NODE 09 / PRIVATE STORAGE</span><a href="./index.html" data-return>← 機密資料へ戻る</a></header>
 <main class="paper" id="archiveMain">
 <div class="masthead"><span>ARCHIVE DATABASE<br>館長私設資料庫</span><b>ACL-G02-MGL-002</b></div>
 <section id="archiveIndex">
@@ -107,8 +118,8 @@ body::before{opacity:.28;background:repeating-linear-gradient(0deg,transparent 0
 <div class="work-meta"><span>公開：1973年</span><span>監督：福田 純</span><span>特技監督：中野 昭慶</span></div>
 <!-- ★ 映画ポスター：画像を変更する場合はsrc・width・height・alt・参照元URLを更新してください。 -->
 <figure class="poster-record">
-  <img src="./archive-images/megalon-poster.jpg" alt="1973年公開『ゴジラ対メガロ』の日本公開時ポスター" width="2048" height="1295" loading="eager">
-  <figcaption><span>RELEASE POSTER // 1973</span><a href="https://japanposter.co.uk/products/godzilla-vs-megalon-original-release-japanese-movie-poster-1973-ultra-rare-large-size-71-x-47-5" target="_blank" rel="noopener">資料画像の参照元</a></figcaption>
+  <img src="./archive-images/megalon-poster.jpg?v=4" alt="1973年公開『ゴジラ対メガロ』の日本公開時ポスター" width="1278" height="1800" loading="eager">
+  <figcaption><span>RELEASE POSTER // 1973</span><a href="https://www.orsonandwelles.co.uk/products/godzilla-vs-megalon-japanese-b2-film-poster" target="_blank" rel="noopener">資料画像の参照元</a></figcaption>
 </figure>
 <div class="section-heading"><h3>CURATOR COLLECTION</h3><small>館長収蔵資料</small></div>
 <!-- ★ 収蔵資料：下の空のdivの中へ、ITEM START～ITEM ENDのarticleをコピーして追加してください。 -->
@@ -163,7 +174,7 @@ body::before{opacity:.28;background:repeating-linear-gradient(0deg,transparent 0
 </template>
 
 <dialog class="item-modal" id="itemModal" aria-label="収蔵資料の詳細"><button class="modal-close" type="button">CLOSE / 閉じる</button><div class="modal-content"></div></dialog>
-<script src="./terminal-session.js"></script>
+<script src="./terminal-session.js?v=4"></script>
 <script>
 (() => {
  const works=[...document.querySelectorAll('.work-file')],index=document.querySelector('#archiveIndex'),view=document.querySelector('#fileView'),list=document.querySelector('#workList'),modal=document.querySelector('#itemModal');let current=-1;
