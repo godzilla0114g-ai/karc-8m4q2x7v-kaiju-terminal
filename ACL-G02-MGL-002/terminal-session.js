@@ -12,6 +12,14 @@
       pause:()=>{if(childHooks.leave)childHooks.leave()}};
     document.addEventListener('pointerdown',()=>host.unlock(),{passive:true});
     document.addEventListener('keydown',()=>host.unlock());
+    const updateChildClock=()=>{
+      const elapsed=Math.max(0,Date.now()-host.startedAt),sec=Math.floor(elapsed/1000);
+      const value=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
+      document.querySelectorAll('[data-session-clock]').forEach(el=>el.textContent=value);
+    };
+    updateChildClock();
+    const childClockInterval=setInterval(updateChildClock,1000);
+    addEventListener('pagehide',()=>clearInterval(childClockInterval),{once:true});
     return;
   }}catch(_){}
   const folder=new URL('.',location.href).pathname;
